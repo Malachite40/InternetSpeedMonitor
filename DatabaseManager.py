@@ -1,5 +1,5 @@
 import sqlite3
-
+from SpeedTest import SpeedTest
 class DatabaseManager():
 
     _conn = []
@@ -35,7 +35,20 @@ class DatabaseManager():
         ) VALUES (?,?,?,?,?,?,?)""", (speedTest._startTime, speedTest._endTime, speedTest._serverName, speedTest._uploadSpeed, speedTest._downloadSpeed, speedTest._ping, speedTest._host))
         self._conn.commit()
         return
-
+    def getAllSpeedTests(self):
+        stList = []
+        for row in self._cursor.execute("""SELECT * FROM speedtest"""):
+            Id = row[0]
+            start = row[1]
+            end = row[2]
+            serverName = row[3]
+            upload = row[4]
+            download = row[5]
+            ping = row[6]
+            host = row[7]
+            newSt = SpeedTest(Id,start,end,serverName,upload,download,ping,host)
+            stList.append(newSt)
+        return stList
     def printSpeedTest(self):
         self._cursor.execute("""SELECT * FROM speedtest""")
         print(self._cursor.fetchall())
